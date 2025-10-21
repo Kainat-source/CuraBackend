@@ -2,25 +2,20 @@ import mongoose from "mongoose";
 
 const connectDB = async () => {
   try {
-    // 🧠 Avoid multiple connections during nodemon restarts
     if (mongoose.connection.readyState >= 1) {
       console.log("⚡ MongoDB already connected");
       return;
     }
 
-    // 🌍 Your MongoDB Atlas connection string
-    const MONGO_URI =
-      "mongodb+srv://kainatn526_db_user:o5xbS2ekMTyJrS59@curalink.gmnvuke.mongodb.net/?retryWrites=true&w=majority&appName=Curalink";
-
+    const MONGO_URI = process.env.MONGO_URI; // Make sure .env has a DB name
     const conn = await mongoose.connect(MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
+      // these options are optional with Node 4+
     });
 
     console.log(`✅ MongoDB Connected: ${conn.connection.host} 🚀`);
   } catch (err) {
     console.error(`❌ DB connection error: ${err.message}`);
-    process.exit(1); // Stop server if DB fails
+    process.exit(1);
   }
 };
 
