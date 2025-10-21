@@ -8,3 +8,4 @@ backups/
 dist/
 build/
 .DS_Store
+uploads/
