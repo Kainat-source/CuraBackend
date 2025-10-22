@@ -1,12 +1,12 @@
-import Staff from "../models/Staff.js";
-import multer from "multer";
+const Staff = require("../models/Staff.js");
+const multer = require("multer");
 
 // 🗂️ Multer Setup
 const storage = multer.memoryStorage();
-export const upload = multer({ storage }).single("photo");
+const upload = multer({ storage }).single("photo");
 
 // 🟢 GET all residents
-export const getStaff = async (req, res) => {
+const getStaff = async (req, res) => {
   try {
     const staff = await Staff.find();
     res.status(200).json(staff);
@@ -17,7 +17,7 @@ export const getStaff = async (req, res) => {
 };
 
 // 🟢 GET single resident
-export const getStaffById = async (req, res) => {
+const getStaffById = async (req, res) => {
   try {
     const { id } = req.params;
     const staff = await Staff.findById(id);
@@ -29,7 +29,7 @@ export const getStaffById = async (req, res) => {
 };
 
 // 🟢 POST - Create new resident
-export const createStaff = async (req, res) => {
+const createStaff = async (req, res) => {
   try {
     const {
       name,
@@ -75,7 +75,7 @@ export const createStaff = async (req, res) => {
 };
 
 // 🟢 PUT - Update resident info
-export const updateStaff = async (req, res) => {
+const updateStaff = async (req, res) => {
   try {
     const { id } = req.params;
     const updatedStaff = await Staff.findByIdAndUpdate(id, req.body, { new: true });
@@ -88,8 +88,8 @@ export const updateStaff = async (req, res) => {
   }
 };
 
-// 🟢 PUT - Add new entry to any category (supports text + object)
-export const updateStaffCategory = async (req, res) => {
+// 🟢 PUT - Add new entry to any category
+const updateStaffCategory = async (req, res) => {
   const { id, categoryName } = req.params;
   const { entry, notes } = req.body;
 
@@ -104,22 +104,19 @@ export const updateStaffCategory = async (req, res) => {
       "elimination",
       "medication",
       "urination",
-      "general", // ✅ Added
+      "general",
     ];
 
     if (!validCategories.includes(categoryName)) {
       return res.status(400).json({ error: "Invalid category name" });
     }
 
-    // ✅ For object-based categories
     if (["mobility", "elimination", "general"].includes(categoryName)) {
       if (!entry || typeof entry !== "object") {
         return res.status(400).json({ error: `Invalid ${categoryName} entry` });
       }
       staff[categoryName].push(entry);
-    }
-    // ✅ For text-based categories
-    else if (categoryName === "nutrition") {
+    } else if (categoryName === "nutrition") {
       staff.nutrition.push(notes || "—");
     } else {
       staff[categoryName].push(notes || "—");
@@ -134,7 +131,7 @@ export const updateStaffCategory = async (req, res) => {
 };
 
 // 🔴 DELETE elimination entry
-export const deleteEliminationEntry = async (req, res) => {
+const deleteEliminationEntry = async (req, res) => {
   const { id, entryId } = req.params;
   try {
     const staff = await Staff.findById(id);
@@ -151,7 +148,7 @@ export const deleteEliminationEntry = async (req, res) => {
 };
 
 // 🔴 DELETE mobility entry
-export const deleteMobilityEntry = async (req, res) => {
+const deleteMobilityEntry = async (req, res) => {
   const { id, entryId } = req.params;
   try {
     const staff = await Staff.findById(id);
@@ -168,7 +165,7 @@ export const deleteMobilityEntry = async (req, res) => {
 };
 
 // 🔴 DELETE general entry
-export const deleteGeneralEntry = async (req, res) => {
+const deleteGeneralEntry = async (req, res) => {
   const { id, entryId } = req.params;
   try {
     const staff = await Staff.findById(id);
@@ -185,7 +182,7 @@ export const deleteGeneralEntry = async (req, res) => {
 };
 
 // 🔴 DELETE - Resident
-export const deleteStaff = async (req, res) => {
+const deleteStaff = async (req, res) => {
   try {
     const { id } = req.params;
     const deleted = await Staff.findByIdAndDelete(id);
@@ -195,4 +192,18 @@ export const deleteStaff = async (req, res) => {
     console.error("❌ Error deleting resident:", err);
     res.status(500).json({ error: err.message });
   }
+};
+
+// ✅ Export all controllers (CommonJS)
+module.exports = {
+  upload,
+  getStaff,
+  getStaffById,
+  createStaff,
+  updateStaff,
+  updateStaffCategory,
+  deleteEliminationEntry,
+  deleteMobilityEntry,
+  deleteGeneralEntry,
+  deleteStaff,
 };

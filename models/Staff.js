@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 // 🟢 Sub-schema for Elimination
 const EliminationSchema = new mongoose.Schema(
@@ -21,11 +21,12 @@ const MobilitySchema = new mongoose.Schema(
   },
   { _id: true }
 );
-// general
+
+// 🟢 Sub-schema for General
 const GeneralSchema = new mongoose.Schema(
   {
     title: String,
-    description: mongoose.Schema.Types.Mixed, // 🧠 store as object
+    description: mongoose.Schema.Types.Mixed, // 🧠 can store object or text
     type: {
       type: String,
       enum: ["info", "plan", "activity"],
@@ -44,7 +45,7 @@ const StaffSchema = new mongoose.Schema({
   careLevel: String,
   photo: String,
 
-  // ✅ Simple string-based logs (for now nutrition is stringified JSON)
+  // ✅ String-based logs
   pain: { type: [String], default: [] },
   nutrition: { type: [String], default: [] },
   medication: { type: [String], default: [] },
@@ -53,9 +54,8 @@ const StaffSchema = new mongoose.Schema({
   // ✅ Object-based logs
   mobility: { type: [MobilitySchema], default: [] },
   elimination: { type: [EliminationSchema], default: [] },
-  general: { type: [GeneralSchema], default: [] }, // 👈 NEW
+  general: { type: [GeneralSchema], default: [] },
 });
 
-export default mongoose.model("Staff", StaffSchema);
-
-
+// ✅ Export model (CommonJS)
+module.exports = mongoose.model("Staff", StaffSchema);

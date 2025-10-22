@@ -1,5 +1,5 @@
-import express from "express";
-import {
+const express = require("express");
+const{
   getStaff,
   getStaffById,
   createStaff,
@@ -10,7 +10,7 @@ import {
   deleteStaff,
   deleteGeneralEntry,
   upload,
-} from "../controllers/staffController.js";
+}= require("../controllers/staffController.js");
 
 const router = express.Router();
 
@@ -26,4 +26,4 @@ router.delete("/:id/general/:entryId", deleteGeneralEntry);
 
 
 
-export default router;
+module.exports = router;

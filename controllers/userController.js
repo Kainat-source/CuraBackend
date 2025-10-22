@@ -1,7 +1,7 @@
-import User from "../models/User.js";
+const User = require("../models/User.js");
 
 // POST - Create user
-export const createUser = async (req, res) => {
+ const createUser = async (req, res) => {
   try {
     const user = await User.create(req.body);
     res.json({ message: "User created successfully 🎉", user });
@@ -11,7 +11,7 @@ export const createUser = async (req, res) => {
 };
 
 // GET - Get all users
-export const getUsers = async (req, res) => {
+ const getUsers = async (req, res) => {
   try {
     const users = await User.find();
     res.json(users);
@@ -19,3 +19,8 @@ export const getUsers = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+module.exports = {
+  createUser, 
+  getUsers
+}
