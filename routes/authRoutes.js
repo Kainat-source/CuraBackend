@@ -5,7 +5,7 @@ const User = require("../models/User.js");
 
 const router = express.Router();
 
-// ✅ Register user
+// ✅ Register
 router.post("/register", async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
@@ -17,6 +17,7 @@ router.post("/register", async (req, res) => {
     if (existingUser)
       return res.status(400).json({ error: "Email already exists 😭" });
 
+    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new User({
@@ -28,9 +29,12 @@ router.post("/register", async (req, res) => {
 
     await newUser.save();
 
-    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
-      expiresIn: "1d",
-    });
+    // Sign JWT
+    const token = jwt.sign(
+      { id: newUser._id, email: newUser.email, role: newUser.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
 
     res.status(201).json({
       message: "Registered successfully 🎉",
@@ -44,11 +48,15 @@ router.post("/register", async (req, res) => {
     });
   } catch (error) {
     console.error("❌ Register Error:", error);
+    // Check for enum validation error
+    if (error.name === "ValidationError") {
+      return res.status(400).json({ error: "Invalid role value 😭" });
+    }
     res.status(500).json({ error: "Server error 😭" });
   }
 });
 
-// ✅ Login user
+// ✅ Login
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -60,13 +68,18 @@ router.post("/login", async (req, res) => {
     if (!user)
       return res.status(400).json({ error: "Invalid credentials 😭" });
 
+    if (!user.password)
+      return res.status(500).json({ error: "Password not set for this user 😭" });
+
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
       return res.status(400).json({ error: "Invalid credentials 😭" });
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "1d",
-    });
+    const token = jwt.sign(
+      { id: user._id, email: user.email, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
 
     res.status(200).json({
       message: "Login successful 🎉",
@@ -84,5 +97,4 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// ✅ CommonJS Export
 module.exports = router;

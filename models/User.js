@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema(
     password: { type: String, required: true },
     role: {
       type: String,
-      enum: ["Arzt", "Pflegekraft", "Administrator", "Andere"], // must match frontend exactly
+      enum: ["Arzt", "Pflegekraft", "Administrator", "Andere"], 
       required: true,
     },
   },
