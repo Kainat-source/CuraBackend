@@ -1,4 +1,3 @@
-
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
@@ -8,7 +7,7 @@ const userSchema = new mongoose.Schema(
     password: { type: String, required: true },
     role: {
       type: String,
-      enum: ["Arzt", "Pflegekraft", "Administrator", "Andere"], 
+      enum: ["Arzt", "Pflegekraft", "Administrator", "Andere"], // must match frontend exactly
       required: true,
     },
   },
