@@ -8,11 +8,20 @@ const authRoutes = require("./routes/authRoutes.js");
 dotenv.config();
 const app = express();
 
-// Middleware
+// ✅ Middleware
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173", // Local frontend (Vite)
+      "https://cura-link.vercel.app", // Deployed frontend
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 
-// MongoDB connection
+// ✅ MongoDB connection
 mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
@@ -21,17 +30,17 @@ mongoose
   .then(() => console.log("✅ MongoDB Connected"))
   .catch((err) => console.error("❌ MongoDB Connection Error:", err));
 
-// Base route
+// ✅ Base route
 app.get("/", (req, res) => res.send("✅ API is running..."));
 
-// Routes
+// ✅ Routes
 app.use("/api/auth", authRoutes);
 
-// Listen locally
+// ✅ Listen locally
 const PORT = process.env.PORT || 5000;
 if (process.env.NODE_ENV !== "production") {
   app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
 }
 
-// Export for Vercel
+// ✅ Export for Vercel
 module.exports = app;
