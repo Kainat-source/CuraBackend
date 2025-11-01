@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ["Pflegekraft", "Arzt", "Administrator", "Andere"], // ✅ deutsche Enum-Werte
+    enum: ["Pflegekraft", "Arzt", "Administrator", "Others"], // ✅ deutsche Enum-Werte
     required: true,
   },
 });
